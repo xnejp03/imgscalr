@@ -16,6 +16,7 @@
 package org.imgscalr;
 
 import java.awt.Color;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,14 +29,14 @@ public class ScalrPadTest extends AbstractScalrTest {
 	@Test
 	public void testPadEX() {
 		try {
-			Scalr.pad(src, -1);
+			Scalr.pad(src, -1, Optional.empty());
 			Assert.assertTrue(false);
 		} catch (IllegalArgumentException ex) {
 			Assert.assertTrue(true);
 		}
 
 		try {
-			Scalr.pad(src, 0);
+			Scalr.pad(src, 0, Optional.empty());
 			Assert.assertTrue(false);
 		} catch (IllegalArgumentException ex) {
 			Assert.assertTrue(true);
@@ -44,24 +45,24 @@ public class ScalrPadTest extends AbstractScalrTest {
 
 	@Test
 	public void testPad() {
-		assertEquals(load("time-square-pad-8.png"), Scalr.pad(src, pad));
+		assertEquals(load("time-square-pad-8.png"), Scalr.pad(src, pad, Optional.empty()));
 	}
 
 	@Test
 	public void testPadColor() {
 		assertEquals(load("time-square-pad-8-red.png"),
-				Scalr.pad(src, pad, Color.RED));
+				Scalr.pad(src, pad, Color.RED, Optional.empty()));
 	}
 
 	@Test
 	public void testPadAlpha() {
 		assertEquals(load("time-square-pad-8-alpha.png"),
-				Scalr.pad(src, pad, alpha));
+				Scalr.pad(src, pad, alpha, Optional.empty()));
 	}
 
 	@Test
 	public void testPadAlphaOps() {
 		assertEquals(load("time-square-pad-8-alpha-ops.png"),
-				Scalr.pad(src, pad, alpha, Scalr.OP_GRAYSCALE));
+				Scalr.pad(src, pad, alpha, Optional.empty(), Scalr.OP_GRAYSCALE));
 	}
 }

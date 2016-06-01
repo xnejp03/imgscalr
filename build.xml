@@ -19,8 +19,8 @@ limitations under the License.
 	<property name="dir.dist" value="dist" />
 	<property name="dir.javadoc" value="${dir.dist}/javadoc" />
 	
-	<property name="java.req.version" value="1.6" />
-	<property name="javadoc.link.url" value="http://download.oracle.com/javase/6/docs/api/" />
+	<property name="java.req.version" value="1.8" />
+	<property name="javadoc.link.url" value="http://download.oracle.com/javase/8/docs/api/" />
 	
 	<property name="version.major" value="4" />
 	<property name="version.minor" value="2" />

@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImagingOpException;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -250,7 +251,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.apply(src, ops);
+				return Scalr.apply(src, Optional.empty(), ops);
 			}
 		});
 	}
@@ -265,7 +266,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.crop(src, width, height, ops);
+				return Scalr.crop(src, width, height, Optional.empty(), ops);
 			}
 		});
 	}
@@ -281,7 +282,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.crop(src, x, y, width, height, ops);
+				return Scalr.crop(src, x, y, width, height, Optional.empty(), ops);
 			}
 		});
 	}
@@ -296,7 +297,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.pad(src, padding, ops);
+				return Scalr.pad(src, padding, Optional.empty(), ops);
 			}
 		});
 	}
@@ -311,7 +312,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.pad(src, padding, color, ops);
+				return Scalr.pad(src, padding, color, Optional.empty(), ops);
 			}
 		});
 	}
@@ -326,7 +327,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.resize(src, targetSize, ops);
+				return Scalr.resize(src, targetSize, Optional.empty(), ops);
 			}
 		});
 	}
@@ -342,7 +343,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.resize(src, scalingMethod, targetSize, ops);
+				return Scalr.resize(src, scalingMethod, targetSize, Optional.empty(), ops);
 			}
 		});
 	}
@@ -358,7 +359,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.resize(src, resizeMode, targetSize, ops);
+				return Scalr.resize(src, resizeMode, targetSize, Optional.empty(), ops);
 			}
 		});
 	}
@@ -374,7 +375,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.resize(src, scalingMethod, resizeMode, targetSize,
+				return Scalr.resize(src, scalingMethod, resizeMode, targetSize, Optional.empty(), 
 						ops);
 			}
 		});
@@ -391,7 +392,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.resize(src, targetWidth, targetHeight, ops);
+				return Scalr.resize(src, targetWidth, targetHeight, Optional.empty(),  ops);
 			}
 		});
 	}
@@ -407,7 +408,7 @@ public class AsyncScalr {
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
 				return Scalr.resize(src, scalingMethod, targetWidth,
-						targetHeight, ops);
+						targetHeight, Optional.empty(), ops);
 			}
 		});
 	}
@@ -423,7 +424,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.resize(src, resizeMode, targetWidth, targetHeight,
+				return Scalr.resize(src, resizeMode, targetWidth, targetHeight,Optional.empty(), 
 						ops);
 			}
 		});
@@ -443,7 +444,7 @@ public class AsyncScalr {
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
 				return Scalr.resize(src, scalingMethod, resizeMode,
-						targetWidth, targetHeight, ops);
+						targetWidth, targetHeight,Optional.empty(),  ops);
 			}
 		});
 	}
@@ -458,7 +459,7 @@ public class AsyncScalr {
 
 		return service.submit(new Callable<BufferedImage>() {
 			public BufferedImage call() throws Exception {
-				return Scalr.rotate(src, rotation, ops);
+				return Scalr.rotate(src, rotation, Optional.empty(), ops);
 			}
 		});
 	}

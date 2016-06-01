@@ -35,6 +35,7 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.Kernel;
 import java.awt.image.RasterFormatException;
 import java.awt.image.RescaleOp;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -612,7 +613,7 @@ public class Scalr {
 	 *             to fail, even when using straight forward JDK-image
 	 *             operations.
 	 */
-	public static BufferedImage apply(BufferedImage src, BufferedImageOp... ops)
+	public static BufferedImage apply(BufferedImage src, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
 	  long t = -1;
 	  if (DEBUG)
@@ -652,7 +653,7 @@ public class Scalr {
 		 * before we try and apply the filter.
 		 */
 		if (!(type == BufferedImage.TYPE_INT_RGB || type == BufferedImage.TYPE_INT_ARGB))
-			src = copyToOptimalImage(src);
+			src = copyToOptimalImage(src, imageType);
 
 		if (DEBUG)
 			log(0, "Applying %d BufferedImageOps...", ops.length);
@@ -698,7 +699,8 @@ public class Scalr {
 			 */
 			BufferedImage dest = createOptimalImage(src,
 					(int) Math.round(resultBounds.getWidth()),
-					(int) Math.round(resultBounds.getHeight()));
+					(int) Math.round(resultBounds.getHeight()),
+					imageType);
 
 			// Perform the operation, update our result to return.
 			BufferedImage result = op.filter(src, dest);
@@ -783,10 +785,10 @@ public class Scalr {
 	 *             to fail, even when using straight forward JDK-image
 	 *             operations.
 	 */
-	public static BufferedImage crop(BufferedImage src, int width, int height,
+	public static BufferedImage crop(BufferedImage src, int width, int height, Optional<Integer> imageType,
 			BufferedImageOp... ops) throws IllegalArgumentException,
 			ImagingOpException {
-		return crop(src, 0, 0, width, height, ops);
+		return crop(src, 0, 0, width, height, imageType, ops);
 	}
 
 	/**
@@ -838,7 +840,7 @@ public class Scalr {
 	 *             operations.
 	 */
 	public static BufferedImage crop(BufferedImage src, int x, int y,
-			int width, int height, BufferedImageOp... ops)
+			int width, int height, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
     long t = -1;
     if (DEBUG)
@@ -870,7 +872,7 @@ public class Scalr {
 					srcWidth, srcHeight, x, y, width, height);
 
 		// Create a target image of an optimal type to render into.
-		BufferedImage result = createOptimalImage(src, width, height);
+		BufferedImage result = createOptimalImage(src, width, height, imageType);
 		Graphics g = result.getGraphics();
 
 		/*
@@ -887,7 +889,7 @@ public class Scalr {
 
 		// Apply any optional operations (if specified).
 		if (ops != null && ops.length > 0)
-			result = apply(result, ops);
+			result = apply(result, imageType, ops);
 
 		return result;
 	}
@@ -939,10 +941,10 @@ public class Scalr {
 	 *             to fail, even when using straight forward JDK-image
 	 *             operations.
 	 */
-	public static BufferedImage pad(BufferedImage src, int padding,
+	public static BufferedImage pad(BufferedImage src, int padding, Optional<Integer> imageType,
 			BufferedImageOp... ops) throws IllegalArgumentException,
 			ImagingOpException {
-		return pad(src, padding, Color.BLACK);
+		return pad(src, padding, Color.BLACK, imageType);
 	}
 
 	/**
@@ -998,7 +1000,7 @@ public class Scalr {
 	 *             operations.
 	 */
 	public static BufferedImage pad(BufferedImage src, int padding,
-			Color color, BufferedImageOp... ops)
+			Color color, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
     long t = -1;
     if (DEBUG)
@@ -1071,7 +1073,7 @@ public class Scalr {
 
 		// Apply any optional operations (if specified).
 		if (ops != null && ops.length > 0)
-			result = apply(result, ops);
+			result = apply(result, imageType,  ops);
 
 		return result;
 	}
@@ -1118,11 +1120,11 @@ public class Scalr {
 	 *             to fail, even when using straight forward JDK-image
 	 *             operations.
 	 */
-	public static BufferedImage resize(BufferedImage src, int targetSize,
+	public static BufferedImage resize(BufferedImage src, int targetSize, Optional<Integer> imageType,
 			BufferedImageOp... ops) throws IllegalArgumentException,
 			ImagingOpException {
 		return resize(src, Method.AUTOMATIC, Mode.AUTOMATIC, targetSize,
-				targetSize, ops);
+				targetSize, imageType, ops);
 	}
 
 	/**
@@ -1175,10 +1177,10 @@ public class Scalr {
 	 * @see Method
 	 */
 	public static BufferedImage resize(BufferedImage src, Method scalingMethod,
-			int targetSize, BufferedImageOp... ops)
+			int targetSize, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
 		return resize(src, scalingMethod, Mode.AUTOMATIC, targetSize,
-				targetSize, ops);
+				targetSize, imageType, ops);
 	}
 
 	/**
@@ -1239,10 +1241,10 @@ public class Scalr {
 	 * @see Mode
 	 */
 	public static BufferedImage resize(BufferedImage src, Mode resizeMode,
-			int targetSize, BufferedImageOp... ops)
+			int targetSize, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
 		return resize(src, Method.AUTOMATIC, resizeMode, targetSize,
-				targetSize, ops);
+				targetSize, imageType, ops);
 	}
 
 	/**
@@ -1307,9 +1309,9 @@ public class Scalr {
 	 * @see Mode
 	 */
 	public static BufferedImage resize(BufferedImage src, Method scalingMethod,
-			Mode resizeMode, int targetSize, BufferedImageOp... ops)
+			Mode resizeMode, int targetSize, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
-		return resize(src, scalingMethod, resizeMode, targetSize, targetSize,
+		return resize(src, scalingMethod, resizeMode, targetSize, targetSize, imageType,
 				ops);
 	}
 
@@ -1363,10 +1365,10 @@ public class Scalr {
 	 *             operations.
 	 */
 	public static BufferedImage resize(BufferedImage src, int targetWidth,
-			int targetHeight, BufferedImageOp... ops)
+			int targetHeight, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
 		return resize(src, Method.AUTOMATIC, Mode.AUTOMATIC, targetWidth,
-				targetHeight, ops);
+				targetHeight, imageType, ops);
 	}
 
 	/**
@@ -1425,9 +1427,9 @@ public class Scalr {
 	 * @see Method
 	 */
 	public static BufferedImage resize(BufferedImage src, Method scalingMethod,
-			int targetWidth, int targetHeight, BufferedImageOp... ops) {
+			int targetWidth, int targetHeight, Optional<Integer> imageType, BufferedImageOp... ops) {
 		return resize(src, scalingMethod, Mode.AUTOMATIC, targetWidth,
-				targetHeight, ops);
+				targetHeight, imageType, ops);
 	}
 
 	/**
@@ -1494,10 +1496,10 @@ public class Scalr {
 	 * @see Mode
 	 */
 	public static BufferedImage resize(BufferedImage src, Mode resizeMode,
-			int targetWidth, int targetHeight, BufferedImageOp... ops)
+			int targetWidth, int targetHeight, Optional<Integer> imageType, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
 		return resize(src, Method.AUTOMATIC, resizeMode, targetWidth,
-				targetHeight, ops);
+				targetHeight, imageType, ops);
 	}
 
 	/**
@@ -1569,7 +1571,7 @@ public class Scalr {
 	 * @see Mode
 	 */
 	public static BufferedImage resize(BufferedImage src, Method scalingMethod,
-			Mode resizeMode, int targetWidth, int targetHeight,
+			Mode resizeMode, int targetWidth, int targetHeight, Optional<Integer> imageType,
 			BufferedImageOp... ops) throws IllegalArgumentException,
 			ImagingOpException {
     long t = -1;
@@ -1691,10 +1693,10 @@ public class Scalr {
 		// Now we scale the image
 		if (scalingMethod == Scalr.Method.SPEED) {
 			result = scaleImage(src, targetWidth, targetHeight,
-					RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+					RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR, imageType);
 		} else if (scalingMethod == Scalr.Method.BALANCED) {
 			result = scaleImage(src, targetWidth, targetHeight,
-					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+					RenderingHints.VALUE_INTERPOLATION_BILINEAR, imageType);
 		} else if (scalingMethod == Scalr.Method.QUALITY
 				|| scalingMethod == Scalr.Method.ULTRA_QUALITY) {
 			/*
@@ -1721,7 +1723,7 @@ public class Scalr {
 				 * wondering how they can speed their own calls up.
 				 */
 				result = scaleImage(src, targetWidth, targetHeight,
-						RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+						RenderingHints.VALUE_INTERPOLATION_BICUBIC, imageType);
 			} else {
 				if (DEBUG)
 					log(1,
@@ -1739,7 +1741,7 @@ public class Scalr {
 				 */
 				result = scaleImageIncrementally(src, targetWidth,
 						targetHeight, scalingMethod,
-						RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+						RenderingHints.VALUE_INTERPOLATION_BICUBIC, imageType);
 			}
 		}
 
@@ -1748,7 +1750,7 @@ public class Scalr {
 
 		// Apply any optional operations (if specified).
 		if (ops != null && ops.length > 0)
-			result = apply(result, ops);
+			result = apply(result, imageType, ops);
 
 		return result;
 	}
@@ -1792,7 +1794,7 @@ public class Scalr {
 	 * 
 	 * @see Rotation
 	 */
-	public static BufferedImage rotate(BufferedImage src, Rotation rotation,
+	public static BufferedImage rotate(BufferedImage src, Rotation rotation, Optional<Integer> imageType,
 			BufferedImageOp... ops) throws IllegalArgumentException,
 			ImagingOpException {
     long t = -1;
@@ -1891,7 +1893,7 @@ public class Scalr {
 		}
 
 		// Create our target image we will render the rotated result to.
-		BufferedImage result = createOptimalImage(src, newWidth, newHeight);
+		BufferedImage result = createOptimalImage(src, newWidth, newHeight, imageType);
 		Graphics2D g2d = (Graphics2D) result.createGraphics();
 
 		/*
@@ -1910,7 +1912,7 @@ public class Scalr {
 
 		// Apply any optional operations (if specified).
 		if (ops != null && ops.length > 0)
-			result = apply(result, ops);
+			result = apply(result, imageType, ops);
 
 		return result;
 	}
@@ -1985,9 +1987,9 @@ public class Scalr {
 	 *      href="http://code.google.com/p/java-image-scaling/source/browse/trunk/src/main/java/com/mortennobel/imagescaling/MultiStepRescaleOp.java">Thanks
 	 *      to Morten Nobel for implementation hint</a>
 	 */
-	protected static BufferedImage createOptimalImage(BufferedImage src) {
-		return createOptimalImage(src, src.getWidth(), src.getHeight());
-	}
+//	protected static BufferedImage createOptimalImage(BufferedImage src) {
+//		return createOptimalImage(src, src.getWidth(), src.getHeight());
+//	}
 
 	/**
 	 * Used to create a {@link BufferedImage} with the given dimensions and the
@@ -2029,7 +2031,7 @@ public class Scalr {
 	 *      to Morten Nobel for implementation hint</a>
 	 */
 	protected static BufferedImage createOptimalImage(BufferedImage src,
-			int width, int height) throws IllegalArgumentException {
+			int width, int height, Optional<Integer> imageType) throws IllegalArgumentException {
 		if (width < 0 || height < 0)
 			throw new IllegalArgumentException("width [" + width
 					+ "] and height [" + height + "] must be >= 0");
@@ -2037,7 +2039,7 @@ public class Scalr {
 		return new BufferedImage(
 				width,
 				height,
-				(src.getTransparency() == Transparency.OPAQUE ? BufferedImage.TYPE_INT_RGB
+				imageType.orElse(src.getTransparency() == Transparency.OPAQUE ? BufferedImage.TYPE_INT_RGB
 						: BufferedImage.TYPE_INT_ARGB));
 	}
 
@@ -2070,13 +2072,13 @@ public class Scalr {
 	 * @throws IllegalArgumentException
 	 *             if <code>src</code> is <code>null</code>.
 	 */
-	protected static BufferedImage copyToOptimalImage(BufferedImage src)
+	protected static BufferedImage copyToOptimalImage(BufferedImage src, Optional<Integer> imageType)
 			throws IllegalArgumentException {
 		if (src == null)
 			throw new IllegalArgumentException("src cannot be null");
 
 		// Calculate the type depending on the presence of alpha.
-		int type = (src.getTransparency() == Transparency.OPAQUE ? BufferedImage.TYPE_INT_RGB
+		int type = imageType.orElse(src.getTransparency() == Transparency.OPAQUE ? BufferedImage.TYPE_INT_RGB
 				: BufferedImage.TYPE_INT_ARGB);
 		BufferedImage result = new BufferedImage(src.getWidth(),
 				src.getHeight(), type);
@@ -2159,10 +2161,10 @@ public class Scalr {
 	 *         dimensions using the given interpolation method.
 	 */
 	protected static BufferedImage scaleImage(BufferedImage src,
-			int targetWidth, int targetHeight, Object interpolationHintValue) {
+			int targetWidth, int targetHeight, Object interpolationHintValue, Optional<Integer> imageType) {
 		// Setup the rendering resources to match the source image's
 		BufferedImage result = createOptimalImage(src, targetWidth,
-				targetHeight);
+				targetHeight, imageType);
 		Graphics2D resultGraphics = result.createGraphics();
 
 		// Scale the image to the new buffer using the specified rendering hint.
@@ -2208,7 +2210,7 @@ public class Scalr {
 	 */
 	protected static BufferedImage scaleImageIncrementally(BufferedImage src,
 			int targetWidth, int targetHeight, Method scalingMethod,
-			Object interpolationHintValue) {
+			Object interpolationHintValue, Optional<Integer> imageType) {
 		boolean hasReassignedSrc = false;
 		int incrementCount = 0;
 		int currentWidth = src.getWidth();
@@ -2304,7 +2306,7 @@ public class Scalr {
 
 			// Render the incremental scaled image.
 			BufferedImage incrementalImage = scaleImage(src, currentWidth,
-					currentHeight, interpolationHintValue);
+					currentHeight, interpolationHintValue, imageType);
 
 			/*
 			 * Before re-assigning our interim (partially scaled)

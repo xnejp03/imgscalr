@@ -15,6 +15,8 @@
  */
 package org.imgscalr;
 
+import java.util.Optional;
+
 import org.imgscalr.Scalr.Rotation;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +25,7 @@ public class ScalrRotateTest extends AbstractScalrTest {
 	@Test
 	public void testRotateEX() {
 		try {
-			Scalr.rotate(src, null);
+			Scalr.rotate(src, null, Optional.empty());
 			Assert.assertTrue(false);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
@@ -33,37 +35,37 @@ public class ScalrRotateTest extends AbstractScalrTest {
 	@Test
 	public void testRotate90() {
 		assertEquals(load("time-square-rotate-90.png"),
-				Scalr.rotate(load("time-square.png"), Rotation.CW_90));
+				Scalr.rotate(load("time-square.png"), Rotation.CW_90, Optional.empty()));
 	}
 
 	@Test
 	public void testRotate180() {
 		assertEquals(load("time-square-rotate-180.png"),
-				Scalr.rotate(load("time-square.png"), Rotation.CW_180));
+				Scalr.rotate(load("time-square.png"), Rotation.CW_180, Optional.empty()));
 	}
 
 	@Test
 	public void testRotate270() {
 		assertEquals(load("time-square-rotate-270.png"),
-				Scalr.rotate(load("time-square.png"), Rotation.CW_270));
+				Scalr.rotate(load("time-square.png"), Rotation.CW_270, Optional.empty()));
 	}
 
 	@Test
 	public void testRotateFlipH() {
 		assertEquals(load("time-square-rotate-horz.png"),
-				Scalr.rotate(load("time-square.png"), Rotation.FLIP_HORZ));
+				Scalr.rotate(load("time-square.png"), Rotation.FLIP_HORZ, Optional.empty()));
 	}
 
 	@Test
 	public void testRotateFlipV() {
 		assertEquals(load("time-square-rotate-vert.png"),
-				Scalr.rotate(load("time-square.png"), Rotation.FLIP_VERT));
+				Scalr.rotate(load("time-square.png"), Rotation.FLIP_VERT, Optional.empty()));
 	}
 
 	@Test
 	public void testRotateFlipHOps() {
 		assertEquals(load("time-square-rotate-horz-ops.png"),
-				Scalr.rotate(load("time-square.png"), Rotation.FLIP_HORZ,
+				Scalr.rotate(load("time-square.png"), Rotation.FLIP_HORZ, Optional.empty(),
 						Scalr.OP_GRAYSCALE));
 	}
 }

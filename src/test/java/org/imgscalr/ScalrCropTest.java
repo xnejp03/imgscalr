@@ -17,6 +17,8 @@ package org.imgscalr;
 
 import static org.imgscalr.Scalr.crop;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,21 +26,21 @@ public class ScalrCropTest extends AbstractScalrTest {
 	@Test
 	public void testCropEX() {
 		try {
-			crop(src, 3200, 2400);
+			crop(src, 3200, 2400, Optional.empty());
 			Assert.assertTrue(false);
 		} catch (Exception e) {
 			Assert.assertTrue(true);
 		}
 
 		try {
-			crop(src, -8, -10, 100, 100);
+			crop(src, -8, -10, 100, 100, Optional.empty());
 			Assert.assertTrue(false);
 		} catch (Exception e) {
 			Assert.assertTrue(true);
 		}
 
 		try {
-			crop(src, -100, -200, -4, -4);
+			crop(src, -100, -200, -4, -4, Optional.empty());
 			Assert.assertTrue(false);
 		} catch (Exception e) {
 			Assert.assertTrue(true);
@@ -47,18 +49,18 @@ public class ScalrCropTest extends AbstractScalrTest {
 
 	@Test
 	public void testCropWH() {
-		assertEquals(load("time-square-crop-wh.png"), crop(src, 320, 240));
+		assertEquals(load("time-square-crop-wh.png"), crop(src, 320, 240, Optional.empty()));
 	}
 
 	@Test
 	public void testCropXYWH() {
 		assertEquals(load("time-square-crop-xywh.png"),
-				crop(src, 100, 100, 320, 240));
+				crop(src, 100, 100, 320, 240, Optional.empty()));
 	}
 
 	@Test
 	public void testCropXYWHOps() {
 		assertEquals(load("time-square-crop-xywh-ops.png"),
-				crop(src, 100, 100, 320, 240, Scalr.OP_GRAYSCALE));
+				crop(src, 100, 100, 320, 240, Optional.empty(), Scalr.OP_GRAYSCALE));
 	}
 }
